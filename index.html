@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@next/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@latest/dist/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
 
     <style>
@@ -92,6 +92,7 @@
 <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
 <script src="https://unpkg.com/tether@latest/dist/js/tether.min.js"></script>
 <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@latest/lodash.min.js"></script>
 
 <script>
     Vue.component('player-input', {
@@ -137,11 +138,40 @@
             teamAScore: null,
             teamBScore: null
         },
+        created () {
+            for (let key of ['players', 'schedule']) {
+                if (localStorage.getItem(key)) {
+                    try {
+                        this[key] = JSON.parse(localStorage.getItem(key));
+                    } catch(e) {
+                        localStorage.removeItem(key);
+                    }
+                }
+            }
+        },
         watch: {
             currentMatch: function (val) {
                 if (val !== null) {
                     this.scoreModalVisible = true;
                 }
+            },
+            schedule: {
+                handler: _.debounce (
+                    function (val) {
+                        localStorage.setItem('schedule', JSON.stringify(val))
+                    },
+                    1000
+                ),
+                deep: true
+            },
+            players: {
+                handler: _.debounce (
+                    function (val) {
+                        localStorage.setItem('players', JSON.stringify(val))
+                    },
+                    1000
+                ),
+                deep: true
             }
         },
         computed: {
@@ -166,7 +196,7 @@
                 this.currentMatch = this.schedule[matchId];
             },
             setScore: function (e) {
-                if (e.isOK === true) {
+                if (e.isOK === 'ok') {
                     this.currentMatch.score = [this.teamAScore, this.teamBScore];
                 }
                 this.currentMatch = null;
