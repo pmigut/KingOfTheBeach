@@ -133,10 +133,29 @@
                 {id: 13, rest: 2, teamA: [1, 3], teamB: [4, 5], score: [0, 0]},
                 {id: 14, rest: 1, teamA: [3, 4], teamB: [2, 5], score: [0, 0]}
             ],
-            scoreModalVisible: false,
             currentMatch: null,
             teamAScore: null,
             teamBScore: null
+        },
+        computed: {
+            ranking () {
+                let players = this.players.slice();
+                return players.sort((a, b) => {
+                    if (a.wins > b.wins)
+                        return 1;
+
+                    if (b.wins > a.wins)
+                        return -1;
+
+                    return a.points - b.points;
+                }).reverse();
+            },
+            scoreModalVisible: {
+                get () {
+                    return this.currentMatch !== null;
+                },
+                set () {}
+            }
         },
         created () {
             for (let key of ['players', 'schedule']) {
@@ -150,11 +169,6 @@
             }
         },
         watch: {
-            currentMatch: function (val) {
-                if (val !== null) {
-                    this.scoreModalVisible = true;
-                }
-            },
             schedule: {
                 handler: _.debounce (
                     function (val) {
@@ -172,20 +186,6 @@
                     1000
                 ),
                 deep: true
-            }
-        },
-        computed: {
-            ranking: function () {
-                let players = this.players.slice();
-                return players.sort((a, b) => {
-                    if (a.wins > b.wins)
-                        return 1;
-
-                    if (b.wins > a.wins)
-                        return -1;
-
-                    return a.points - b.points;
-                }).reverse();
             }
         },
         methods: {
