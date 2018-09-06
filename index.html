@@ -12,6 +12,7 @@
     <style>
         .container {
             padding-top: 1rem;
+            margin: 10px auto;
         }
     </style>
 </head>
@@ -73,18 +74,28 @@
             </tr>
             </tbody>
         </table>
+        <b-button @click="resetModalVisible = true" variant="outline-secondary" :block="true">
+            Reset
+        </b-button>
     </div>
-    <b-modal v-if="currentMatch !== null" v-model="scoreModalVisible" :current-match.sync="currentMatch"
+    <b-modal v-if="scoreModalVisible" v-model="scoreModalVisible" :current-match.sync="currentMatch"
              title="Wynik meczu" ok-only @hide="setScore" @shown="[teamAScore, teamBScore] = currentMatch.score">
         <h4>
             {{ playerName(currentMatch.teamA[0]) }}, {{ playerName(currentMatch.teamA[1]) }}
         </h4>
-        <b-form-input v-model="teamAScore" type="number"></b-form-input>
+        <b-form-input v-model="teamAScore" type="number" @focus.native="$event.target.select()"></b-form-input>
         <hr>
         <h4>
             {{ playerName(currentMatch.teamB[0]) }}, {{ playerName(currentMatch.teamB[1]) }}
         </h4>
-        <b-form-input v-model="teamBScore" type="number"></b-form-input>
+        <b-form-input v-model="teamBScore" type="number" @focus.native="$event.target.select()"></b-form-input>
+    </b-modal>
+    <b-modal v-if="resetModalVisible" v-model="resetModalVisible" title="Reset" @hide="reset">
+        <b-form-group>
+            <b-form-radio-group id="radios" v-model="selectedResetOption" :options="resetOptions"
+                                name="resetOption" stacked>
+            </b-form-radio-group>
+        </b-form-group>
     </b-modal>
 </div>
 
@@ -101,7 +112,8 @@
             <div class="form-group">\
                 <b-form-input\
                     v-model="player.name"\
-                    type="text">\
+                    type="text"\
+                    @focus.native="$event.target.select()">\
                 </b-form-input>\
             </div>\
         '
@@ -135,7 +147,13 @@
             ],
             currentMatch: null,
             teamAScore: null,
-            teamBScore: null
+            teamBScore: null,
+            resetModalVisible: false,
+            selectedResetOption: 'scores',
+            resetOptions: [
+                {value: 'scores', text: 'Resetuj tylko wyniki'},
+                {value: 'all', text: 'Resetuj wyniki i listę zawodników'}
+            ]
         },
         computed: {
             ranking () {
@@ -174,7 +192,7 @@
                     function (val) {
                         localStorage.setItem('schedule', JSON.stringify(val))
                     },
-                    1000
+                    500
                 ),
                 deep: true
             },
@@ -183,7 +201,7 @@
                     function (val) {
                         localStorage.setItem('players', JSON.stringify(val))
                     },
-                    1000
+                    500
                 ),
                 deep: true
             }
@@ -197,7 +215,7 @@
             },
             setScore: function (e) {
                 if (e.isOK === 'ok') {
-                    this.currentMatch.score = [this.teamAScore, this.teamBScore];
+                    this.currentMatch.score = [parseInt(this.teamAScore), parseInt(this.teamBScore)];
                 }
                 this.currentMatch = null;
 
@@ -224,6 +242,22 @@
                             this.players[playerId - 1].wins++;
                         this.players[playerId - 1].points += match.score[1] - match.score[0];
                     }
+                }
+            },
+            reset (e) {
+                if (e.isOK === 'ok') {
+                    localStorage.removeItem('schedule');
+
+                    if (this.selectedResetOption === 'all') {
+                        localStorage.removeItem('players');
+                    } else {
+                        this.resetWinsAndPoints();
+                        // Explicitly save players in local storage as debounce may not finish
+                        // before the page is reloaded
+                        localStorage.setItem('players', JSON.stringify(this.players))
+                    }
+
+                    location.reload();
                 }
             }
         }
