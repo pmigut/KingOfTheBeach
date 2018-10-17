@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>King of The Beach</title>
+    <title>King of the beach</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -18,29 +18,25 @@
 </head>
 <body>
 <div id="app">
-    <b-navbar toggleable fixed sticky type="inverse" variant="inverse">
-
-        <b-nav-toggle target="nav_collapse"></b-nav-toggle>
-
-        <b-link class="navbar-brand" to="#">
-            <span>KOTB</span>
-        </b-link>
-    </b-navbar>
     <div class="container">
-        <h2>Zawodnicy</h2>
+        <b-jumbotron
+                header="King of the beach" header-level="4"
+                lead="Round-robin tournament schedule for 5 players, who compete individually against each other in 2 on 2 matches.">
+        </b-jumbotron>
+        <h2>Players</h2>
         <player-input
             v-for="player in players"
             v-bind:player="player"
             v-bind:key="player.id">
         </player-input>
-        <h2>Mecze</h2>
+        <h2>Matches</h2>
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>#</th>
-                <th>Pauza</th>
-                <th>Zespoły</th>
-                <th>Wynik</th>
+                <th>Rest</th>
+                <th>Teams</th>
+                <th>Score</th>
             </tr>
             </thead>
             <tbody>
@@ -60,9 +56,9 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Zawodnik</th>
-                <th>Zwycięstwa</th>
-                <th>Punkty</th>
+                <th>Player</th>
+                <th>Wins</th>
+                <th>Balance</th>
             </tr>
             </thead>
             <tbody>
@@ -79,7 +75,7 @@
         </b-button>
     </div>
     <b-modal v-if="scoreModalVisible" v-model="scoreModalVisible" :current-match.sync="currentMatch"
-             title="Wynik meczu" ok-only @hide="setScore" @shown="[teamAScore, teamBScore] = currentMatch.score">
+             title="Score input" ok-only @hide="setScore" @shown="[teamAScore, teamBScore] = currentMatch.score">
         <h4>
             {{ playerName(currentMatch.teamA[0]) }}, {{ playerName(currentMatch.teamA[1]) }}
         </h4>
@@ -104,164 +100,6 @@
 <script src="https://unpkg.com/tether@latest/dist/js/tether.min.js"></script>
 <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@latest/lodash.min.js"></script>
-
-<script>
-    Vue.component('player-input', {
-        props: ['player'],
-        template: '\
-            <div class="form-group">\
-                <b-form-input\
-                    v-model="player.name"\
-                    type="text"\
-                    @focus.native="$event.target.select()">\
-                </b-form-input>\
-            </div>\
-        '
-    });
-    let vm = new Vue({
-        el: '#app',
-        data: {
-            players: [
-                {id: 1, name: 'Player 1', wins: 0, points: 0},
-                {id: 2, name: 'Player 2', wins: 0, points: 0},
-                {id: 3, name: 'Player 3', wins: 0, points: 0},
-                {id: 4, name: 'Player 4', wins: 0, points: 0},
-                {id: 5, name: 'Player 5', wins: 0, points: 0}
-            ],
-            schedule: [
-                {id: 0, rest: 5, teamA: [1, 2], teamB: [3, 4], score: [0, 0]},
-                {id: 1, rest: 4, teamA: [1, 3], teamB: [2, 5], score: [0, 0]},
-                {id: 2, rest: 3, teamA: [2, 4], teamB: [1, 5], score: [0, 0]},
-                {id: 3, rest: 2, teamA: [3, 5], teamB: [1, 4], score: [0, 0]},
-                {id: 4, rest: 1, teamA: [4, 5], teamB: [2, 3], score: [0, 0]},
-                {id: 5, rest: 5, teamA: [1, 3], teamB: [2, 4], score: [0, 0]},
-                {id: 6, rest: 4, teamA: [2, 3], teamB: [1, 5], score: [0, 0]},
-                {id: 7, rest: 3, teamA: [4, 5], teamB: [1, 2], score: [0, 0]},
-                {id: 8, rest: 2, teamA: [1, 5], teamB: [3, 4], score: [0, 0]},
-                {id: 9, rest: 1, teamA: [2, 4], teamB: [3, 5], score: [0, 0]},
-                {id: 10, rest: 5, teamA: [2, 3], teamB: [1, 4], score: [0, 0]},
-                {id: 11, rest: 4, teamA: [3, 5], teamB: [1, 2], score: [0, 0]},
-                {id: 12, rest: 3, teamA: [1, 4], teamB: [2, 5], score: [0, 0]},
-                {id: 13, rest: 2, teamA: [1, 3], teamB: [4, 5], score: [0, 0]},
-                {id: 14, rest: 1, teamA: [3, 4], teamB: [2, 5], score: [0, 0]}
-            ],
-            currentMatch: null,
-            teamAScore: null,
-            teamBScore: null,
-            resetModalVisible: false,
-            selectedResetOption: 'scores',
-            resetOptions: [
-                {value: 'scores', text: 'Resetuj tylko wyniki'},
-                {value: 'all', text: 'Resetuj wyniki i listę zawodników'}
-            ]
-        },
-        computed: {
-            ranking () {
-                let players = this.players.slice();
-                return players.sort((a, b) => {
-                    if (a.wins > b.wins)
-                        return 1;
-
-                    if (b.wins > a.wins)
-                        return -1;
-
-                    return a.points - b.points;
-                }).reverse();
-            },
-            scoreModalVisible: {
-                get () {
-                    return this.currentMatch !== null;
-                },
-                set () {}
-            }
-        },
-        created () {
-            for (let key of ['players', 'schedule']) {
-                if (localStorage.getItem(key)) {
-                    try {
-                        this[key] = JSON.parse(localStorage.getItem(key));
-                    } catch(e) {
-                        localStorage.removeItem(key);
-                    }
-                }
-            }
-        },
-        watch: {
-            schedule: {
-                handler: _.debounce (
-                    function (val) {
-                        localStorage.setItem('schedule', JSON.stringify(val))
-                    },
-                    500
-                ),
-                deep: true
-            },
-            players: {
-                handler: _.debounce (
-                    function (val) {
-                        localStorage.setItem('players', JSON.stringify(val))
-                    },
-                    500
-                ),
-                deep: true
-            }
-        },
-        methods: {
-            playerName: function (playerId) {
-                return this.players[playerId - 1].name
-            },
-            showScoreModal: function (matchId) {
-                this.currentMatch = this.schedule[matchId];
-            },
-            setScore: function (e) {
-                if (e.isOK === 'ok') {
-                    this.currentMatch.score = [parseInt(this.teamAScore), parseInt(this.teamBScore)];
-                }
-                this.currentMatch = null;
-
-                this.updateRanking();
-            },
-            resetWinsAndPoints: function () {
-                for (let player of this.players) {
-                    player.wins = 0;
-                    player.points = 0;
-                }
-            },
-            updateRanking: function () {
-                this.resetWinsAndPoints();
-
-                for (let match of this.schedule) {
-                    for (let playerId of match.teamA) {
-                        if (match.score[0] > match.score[1])
-                            this.players[playerId - 1].wins++;
-                        this.players[playerId - 1].points += match.score[0] - match.score[1];
-                    }
-
-                    for (let playerId of match.teamB) {
-                        if (match.score[1] > match.score[0])
-                            this.players[playerId - 1].wins++;
-                        this.players[playerId - 1].points += match.score[1] - match.score[0];
-                    }
-                }
-            },
-            reset (e) {
-                if (e.isOK === 'ok') {
-                    localStorage.removeItem('schedule');
-
-                    if (this.selectedResetOption === 'all') {
-                        localStorage.removeItem('players');
-                    } else {
-                        this.resetWinsAndPoints();
-                        // Explicitly save players in local storage as debounce may not finish
-                        // before the page is reloaded
-                        localStorage.setItem('players', JSON.stringify(this.players))
-                    }
-
-                    location.reload();
-                }
-            }
-        }
-    })
-</script>
+<script src="app.js"></script>
 </body>
 </html>
