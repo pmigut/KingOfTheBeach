@@ -1,4 +1,4 @@
-#King of the beach
+# King of the beach
 
 Round-robin tournament schedule for 5 players, who compete individually against each other in 2 on 2 matches.
 
