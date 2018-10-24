@@ -1,15 +1,15 @@
 Vue.component('player-input', {
     props: ['player'],
     template: '\
-            <div class="form-group">\
-                <b-form-input\
-                    v-model="player.name"\
-                    type="text"\
-                    @focus.native="$event.target.select()">\
-                </b-form-input>\
-            </div>\
+            <b-form-input\
+                v-model="player.name"\
+                type="text"\
+                @focus.native="$event.target.select()"\
+                class="player-input">\
+            </b-form-input>\
         '
 });
+
 let vm = new Vue({
     el: '#app',
     data: {
