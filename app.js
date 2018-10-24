@@ -1,3 +1,12 @@
+import '@babel/polyfill'
+import debounce from 'lodash/debounce'
+import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+Vue.use(BootstrapVue);
+
 Vue.component('player-input', {
     props: ['player'],
     template: '\
@@ -80,7 +89,7 @@ let vm = new Vue({
     },
     watch: {
         schedule: {
-            handler: _.debounce (
+            handler: debounce (
                 function (val) {
                     localStorage.setItem('schedule', JSON.stringify(val))
                 },
@@ -89,7 +98,7 @@ let vm = new Vue({
             deep: true
         },
         players: {
-            handler: _.debounce (
+            handler: debounce (
                 function (val) {
                     localStorage.setItem('players', JSON.stringify(val))
                 },

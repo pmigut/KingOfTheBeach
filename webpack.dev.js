@@ -6,5 +6,10 @@ module.exports = merge(common, {
     devtool: 'inline-source-map',
     devServer: {
         contentBase: './dist'
+    },
+    resolve: {
+        alias: {
+            'vue': 'vue/dist/vue.esm.js'
+        }
     }
 });
