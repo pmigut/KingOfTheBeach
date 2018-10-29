@@ -4,23 +4,15 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import PlayerInput from './components/PlayerInput.vue'
 
 Vue.use(BootstrapVue);
 
-Vue.component('player-input', {
-    props: ['player'],
-    template: '\
-            <b-form-input\
-                v-model="player.name"\
-                type="text"\
-                @focus.native="$event.target.select()"\
-                class="player-input">\
-            </b-form-input>\
-        '
-});
-
 let vm = new Vue({
     el: '#app',
+    components: {
+        'player-input': PlayerInput
+    },
     data: {
         players: [
             {id: 1, name: 'Player 1', wins: 0, points: 0},
