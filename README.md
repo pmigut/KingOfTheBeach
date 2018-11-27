@@ -4,4 +4,4 @@ Round-robin tournament schedule for 5 players, who compete individually against 
 
 It is built with [Bootstrap + Vue](https://bootstrap-vue.js.org/) and uses local storage for data persistence.
 
-Try [live demo](https://lazygreen.github.io/KingOfTheBeach)
+Try [live demo](https://pmigut.github.io/KingOfTheBeach)
