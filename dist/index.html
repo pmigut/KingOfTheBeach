@@ -71,19 +71,19 @@
             Reset
         </b-button>
     </div>
-    <b-modal v-if="scoreModalVisible" v-model="scoreModalVisible" :current-match.sync="currentMatch"
+    <b-modal v-model="scoreModalVisible" :current-match.sync="currentMatch"
              title="Score input" ok-only @hide="setScore" @shown="[teamAScore, teamBScore] = currentMatch.score">
-        <h4>
+        <h4 v-if="currentMatch">
             {{ playerName(currentMatch.teamA[0]) }}, {{ playerName(currentMatch.teamA[1]) }}
         </h4>
         <b-form-input v-model="teamAScore" type="number" @focus.native="$event.target.select()"></b-form-input>
         <hr>
-        <h4>
+        <h4 v-if="currentMatch">
             {{ playerName(currentMatch.teamB[0]) }}, {{ playerName(currentMatch.teamB[1]) }}
         </h4>
         <b-form-input v-model="teamBScore" type="number" @focus.native="$event.target.select()"></b-form-input>
     </b-modal>
-    <b-modal v-if="resetModalVisible" v-model="resetModalVisible" title="Reset" @hide="reset">
+    <b-modal v-model="resetModalVisible" title="Reset" @hide="reset">
         <b-form-group>
             <b-form-radio-group id="radios" v-model="selectedResetOption" :options="resetOptions"
                                 name="resetOption" stacked>
