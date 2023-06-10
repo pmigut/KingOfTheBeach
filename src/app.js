@@ -1,7 +1,6 @@
-import 'babel-polyfill'
-import debounce from 'lodash/debounce'
+import { debounce } from 'lodash'
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+import { BootstrapVue } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import PlayerInput from './components/PlayerInput.vue'
@@ -106,8 +105,14 @@ let vm = new Vue({
         showScoreModal (matchId) {
             this.currentMatch = this.schedule[matchId];
         },
+        handleScoreModalHidden () {
+            this.currentMatch = null;
+        },
+        handleScoreModalShown () {
+            [this.teamAScore, this.teamBScore] = this.currentMatch.score;
+        },
         setScore (e) {
-            if (e.isOK === 'ok') {
+            if (e.trigger === 'ok') {
                 this.currentMatch.score = [parseInt(this.teamAScore), parseInt(this.teamBScore)];
             }
             this.currentMatch = null;
@@ -138,7 +143,7 @@ let vm = new Vue({
             }
         },
         reset (e) {
-            if (e.isOK === 'ok') {
+            if (e.trigger === 'ok') {
                 localStorage.removeItem('schedule');
 
                 if (this.selectedResetOption === 'all') {
