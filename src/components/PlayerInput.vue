@@ -2,7 +2,7 @@
     <b-form-input
         v-model="player.name"
         type="text"
-        @focus.native="$event.target.select()"
+        @focus="$event.target.select()"
         class="player-input">
     </b-form-input>
 </template>

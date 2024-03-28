@@ -3,6 +3,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = {
+    resolve: {
+        alias: {
+            vue: '@vue/compat'
+        }
+    },
     entry: {
         app: './src/app.js'
     },
@@ -29,7 +34,14 @@ module.exports = {
             },
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
+                options: {
+                    compilerOptions: {
+                        compatConfig: {
+                            MODE: 2
+                        }
+                    }
+                }
             }
         ]
     }

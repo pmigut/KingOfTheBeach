@@ -1,51 +1,50 @@
 import { debounce } from 'lodash'
-import Vue from 'vue'
+import { createApp } from 'vue'
 import { BootstrapVue } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import PlayerInput from './components/PlayerInput.vue'
 
-Vue.use(BootstrapVue);
-
-let vm = new Vue({
-    el: '#app',
+let app = createApp({
     components: {
         'player-input': PlayerInput
     },
-    data: {
-        players: [
-            {id: 1, name: 'Player 1', wins: 0, points: 0},
-            {id: 2, name: 'Player 2', wins: 0, points: 0},
-            {id: 3, name: 'Player 3', wins: 0, points: 0},
-            {id: 4, name: 'Player 4', wins: 0, points: 0},
-            {id: 5, name: 'Player 5', wins: 0, points: 0}
-        ],
-        schedule: [
-            {id: 0, rest: 5, teamA: [1, 2], teamB: [3, 4], score: [0, 0]},
-            {id: 1, rest: 4, teamA: [1, 3], teamB: [2, 5], score: [0, 0]},
-            {id: 2, rest: 3, teamA: [2, 4], teamB: [1, 5], score: [0, 0]},
-            {id: 3, rest: 2, teamA: [3, 5], teamB: [1, 4], score: [0, 0]},
-            {id: 4, rest: 1, teamA: [4, 5], teamB: [2, 3], score: [0, 0]},
-            {id: 5, rest: 5, teamA: [1, 3], teamB: [2, 4], score: [0, 0]},
-            {id: 6, rest: 4, teamA: [2, 3], teamB: [1, 5], score: [0, 0]},
-            {id: 7, rest: 3, teamA: [4, 5], teamB: [1, 2], score: [0, 0]},
-            {id: 8, rest: 2, teamA: [1, 5], teamB: [3, 4], score: [0, 0]},
-            {id: 9, rest: 1, teamA: [2, 4], teamB: [3, 5], score: [0, 0]},
-            {id: 10, rest: 5, teamA: [2, 3], teamB: [1, 4], score: [0, 0]},
-            {id: 11, rest: 4, teamA: [3, 5], teamB: [1, 2], score: [0, 0]},
-            {id: 12, rest: 3, teamA: [1, 4], teamB: [2, 5], score: [0, 0]},
-            {id: 13, rest: 2, teamA: [1, 3], teamB: [4, 5], score: [0, 0]},
-            {id: 14, rest: 1, teamA: [3, 4], teamB: [2, 5], score: [0, 0]}
-        ],
-        currentMatch: null,
-        teamAScore: null,
-        teamBScore: null,
-        resetModalVisible: false,
-        selectedResetOption: 'scores',
-        resetOptions: [
-            {value: 'scores', text: 'Reset scores'},
-            {value: 'all', text: 'Reset scores and player names'}
-        ]
+    data() {
+        return {
+            players: [
+                {id: 1, name: 'Player 1', wins: 0, points: 0},
+                {id: 2, name: 'Player 2', wins: 0, points: 0},
+                {id: 3, name: 'Player 3', wins: 0, points: 0},
+                {id: 4, name: 'Player 4', wins: 0, points: 0},
+                {id: 5, name: 'Player 5', wins: 0, points: 0}
+            ],
+            schedule: [
+                {id: 0, rest: 5, teamA: [1, 2], teamB: [3, 4], score: [0, 0]},
+                {id: 1, rest: 4, teamA: [1, 3], teamB: [2, 5], score: [0, 0]},
+                {id: 2, rest: 3, teamA: [2, 4], teamB: [1, 5], score: [0, 0]},
+                {id: 3, rest: 2, teamA: [3, 5], teamB: [1, 4], score: [0, 0]},
+                {id: 4, rest: 1, teamA: [4, 5], teamB: [2, 3], score: [0, 0]},
+                {id: 5, rest: 5, teamA: [1, 3], teamB: [2, 4], score: [0, 0]},
+                {id: 6, rest: 4, teamA: [2, 3], teamB: [1, 5], score: [0, 0]},
+                {id: 7, rest: 3, teamA: [4, 5], teamB: [1, 2], score: [0, 0]},
+                {id: 8, rest: 2, teamA: [1, 5], teamB: [3, 4], score: [0, 0]},
+                {id: 9, rest: 1, teamA: [2, 4], teamB: [3, 5], score: [0, 0]},
+                {id: 10, rest: 5, teamA: [2, 3], teamB: [1, 4], score: [0, 0]},
+                {id: 11, rest: 4, teamA: [3, 5], teamB: [1, 2], score: [0, 0]},
+                {id: 12, rest: 3, teamA: [1, 4], teamB: [2, 5], score: [0, 0]},
+                {id: 13, rest: 2, teamA: [1, 3], teamB: [4, 5], score: [0, 0]},
+                {id: 14, rest: 1, teamA: [3, 4], teamB: [2, 5], score: [0, 0]}
+            ],
+            currentMatch: null,
+            teamAScore: null,
+            teamBScore: null,
+            resetModalVisible: false,
+            selectedResetOption: 'scores',
+            resetOptions: [
+                {value: 'scores', text: 'Reset scores'},
+                {value: 'all', text: 'Reset scores and player names'}
+            ]
+        }
     },
     computed: {
         ranking () {
@@ -81,7 +80,7 @@ let vm = new Vue({
     watch: {
         schedule: {
             handler: debounce (
-                function (val) {
+                val => {
                     localStorage.setItem('schedule', JSON.stringify(val))
                 },
                 500
@@ -90,7 +89,7 @@ let vm = new Vue({
         },
         players: {
             handler: debounce (
-                function (val) {
+                val => {
                     localStorage.setItem('players', JSON.stringify(val))
                 },
                 500
@@ -160,3 +159,6 @@ let vm = new Vue({
         }
     }
 });
+
+app.use(BootstrapVue);
+app.mount('#app');

@@ -9,10 +9,5 @@ module.exports = merge(common, {
             directory: './dist'
         },
         watchFiles: ['src/**/*', 'index.html']
-    },
-    resolve: {
-        alias: {
-            'vue': 'vue/dist/vue.esm.js'
-        }
     }
 });
