@@ -1,8 +1,7 @@
 {
     "scripts": {
         "build": "webpack --config webpack.prod.js",
-        "start": "webpack-dev-server --open --config webpack.dev.js",
-        "deploy-demo": "git subtree push --prefix dist origin gh-pages"
+        "start": "webpack-dev-server --open --config webpack.dev.js"
     },
     "devDependencies": {
         "@vue/compiler-sfc": "^3.4.21",
